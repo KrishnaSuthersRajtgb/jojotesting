@@ -65,7 +65,7 @@ export const registerUser = async (
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const forwarded = req.headers['x-forwarded-for'] as string | undefined;
-    const ipAddress = forwarded ? forwarded.split(',')[0].trim() : (req.ip ?? '');
+    const ipAddress = forwarded ? (forwarded.split(',')[0] ?? forwarded).trim() : (req.ip ?? '');
 
     const user = await User.create({
       name,

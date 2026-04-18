@@ -196,6 +196,11 @@ export const updateOrderStatus = async (req: Request, res: Response): Promise<vo
     const { orderId } = req.params;
     const { status } = req.body as { status: string };
 
+    if (typeof orderId !== 'string') {
+      res.status(400).json({ message: 'Invalid orderId' });
+      return;
+    }
+
     const updated = await prisma.order.update({
       where: { orderId },
       data: { status },
