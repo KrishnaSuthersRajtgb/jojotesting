@@ -62,14 +62,12 @@ export const addToCart = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Find or create cart for user
     let cart = await prisma.cart.findFirst({ where: { userId } });
 
     if (!cart) {
       cart = await prisma.cart.create({ data: { userId } });
     }
 
-    // Check if same product+size already in cart
     const existingItem = await prisma.cartItem.findFirst({
       where: { cartId: cart.id, productId, size },
     });
@@ -88,7 +86,7 @@ export const addToCart = async (req: Request, res: Response): Promise<void> => {
         cartId: cart.id,
         productId,
         name,
-        image: image,
+        image,
         price,
         size,
         quantity: 1,
@@ -111,7 +109,9 @@ export const updateCartItem = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    const itemId = req.params['itemId'];
+    const rawItemId = req.params['itemId'];
+    const itemId = Array.isArray(rawItemId) ? rawItemId[0] : rawItemId;
+
     const { quantity } = req.body as { quantity: number };
 
     if (!itemId) {
@@ -145,7 +145,8 @@ export const removeCartItem = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    const itemId = req.params['itemId'];
+    const rawItemId = req.params['itemId'];
+    const itemId = Array.isArray(rawItemId) ? rawItemId[0] : rawItemId;
 
     if (!itemId) {
       res.status(400).json({ message: 'Item ID is required' });

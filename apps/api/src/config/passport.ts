@@ -12,8 +12,8 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       callbackURL: '/api/google/callback',
     },
-    // ✅ void return type — fixes "Promise returned where void expected"
-    (accessToken, refreshToken, profile: Profile, done): void => {
+    // ✅ FIX: prefix unused params with _
+    (_accessToken, _refreshToken, profile: Profile, done): void => {
       const email = profile.emails?.[0]?.value;
       const name = profile.displayName;
 
