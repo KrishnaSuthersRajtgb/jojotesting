@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: jojo-api
+    ports:
+      - '3001:3001'
+    env_file:
+      - apps/api/.env
+    networks:
+      - jojo-network
+
+  web:
+    build:   # ✅ fixed indentation
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: jojo-web
+    ports:
+      - '5173:5173'
+    depends_on:
+      - api
+    environment:
+      VITE_API_URL: http://api:3001   # ✅ fixed syntax
+    networks:
+      - jojo-network
+
+networks:
+  jojo-network:
+    driver: bridge
